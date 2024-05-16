@@ -2,24 +2,29 @@ package com.example.rentitfinalsjava;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class DatabaseManager {
     private static DatabaseManager instance;
-    private DatabaseManager(){};
-    public static DatabaseManager getInstance(){
-        if (instance == null){
+
+    private DatabaseManager() {}
+
+    public static DatabaseManager getInstance() {
+        if (instance == null) {
             instance = new DatabaseManager();
         }
-
         return instance;
-    };
-    public void initializeDB (){
+    }
+
+    public void initializeDB() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
-            try (Connection c = SQLConnection.getConnection()){
+        executorService.execute(() -> {
+            try (Connection c = SQLConnection.getConnection()) {
                 Statement stmt;
                 stmt = c.createStatement();
 
@@ -47,6 +52,7 @@ public class DatabaseManager {
             }
         });
     }
+
     public void insertUser(String firstName, String lastName, String gender, String email, String username, String password) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
@@ -73,4 +79,26 @@ public class DatabaseManager {
         });
     }
 
+    private static boolean userIsFound = false;
+
+    public boolean validateUser(String username, String password) {
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try (Connection connection = SQLConnection.getConnection();
+                     PreparedStatement statement = connection.prepareStatement("SELECT * FROM tblUser WHERE username = ? AND password = ?")) {
+                    statement.setString(1, username);
+                    statement.setString(2, password);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        userIsFound = true;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+       return userIsFound;
+    }
 }

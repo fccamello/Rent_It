@@ -2,17 +2,22 @@ package com.example.rentitfinalsjava;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 public class Activity_sign_up extends AppCompatActivity {
 
-    private EditText firstNameEditText, lastNameEditText, emailEditText, usernameEditText, passwordEditText;
+    private EditText etfname, etlastname, etemail, etusername, etpassword;
+    private TextView loginredirect;
+
     private RadioGroup userTypeRadioGroup, genderRadioGroup;
-    private Button signUpButton;
+    private Button btnsignUp;
 
 
     @Override
@@ -23,27 +28,36 @@ public class Activity_sign_up extends AppCompatActivity {
         DatabaseManager dbManager = DatabaseManager.getInstance();
         dbManager.initializeDB();
 
-        firstNameEditText = findViewById(R.id.signup_firstname);
-        lastNameEditText = findViewById(R.id.signup_lastname);
-        emailEditText = findViewById(R.id.signup_email);
-        usernameEditText = findViewById(R.id.signup_username);
-        passwordEditText = findViewById(R.id.signup_password);
+        etfname = findViewById(R.id.signup_firstname);
+        etlastname = findViewById(R.id.signup_lastname);
+        etemail = findViewById(R.id.signup_email);
+        etusername = findViewById(R.id.signup_username);
+        etpassword = findViewById(R.id.signup_password);
         userTypeRadioGroup = findViewById(R.id.rb_usertype);
         genderRadioGroup = findViewById(R.id.gender_radio_group);
-        signUpButton = findViewById(R.id.signup_button);
+        btnsignUp = findViewById(R.id.signup_button);
 
-        signUpButton.setOnClickListener(view -> insertUsers());
+        btnsignUp.setOnClickListener(view -> insertUsers());
+
+        loginredirect = findViewById(R.id.loginredirect);
+        loginredirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_sign_up.this, Activity_log_in.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
 
     public void insertUsers(){
 
-        String firstName = firstNameEditText.getText().toString().trim();
-        String lastName = lastNameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String username = usernameEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
+        String firstName = etfname.getText().toString().trim();
+        String lastName = etlastname.getText().toString().trim();
+        String email = etemail.getText().toString().trim();
+        String username = etusername.getText().toString().trim();
+        String password = etpassword.getText().toString().trim();
 
         // Get selected user type
         RadioButton userTypeRadioButton = findViewById(userTypeRadioGroup.getCheckedRadioButtonId());

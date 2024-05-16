@@ -6,7 +6,10 @@ import java.sql.SQLException;
 
 public class SQLConnection {
 //    public static final String IP = "192.168.100.35"; // Charlene IP
-    public static final String IP = "192.168.254.188"; //Fria IP
+//    public static final String IP = "192.168.254.188"; //Fria IP
+
+    public static final String IP = "172.20.10.2"; //Fria secret IP
+
     public static final String URL = "jdbc:mysql://" + IP + ":3306/";
     public static String DBName = "";
     public static final String USERNAME = "AFC";
