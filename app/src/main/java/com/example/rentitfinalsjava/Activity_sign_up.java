@@ -1,5 +1,6 @@
 package com.example.rentitfinalsjava;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.rentitfinalsjava.DatabaseManager;
+
 public class Activity_sign_up extends AppCompatActivity {
 
     private EditText etfname, etlastname, etemail, etusername, etpassword;
@@ -18,15 +21,12 @@ public class Activity_sign_up extends AppCompatActivity {
 
     private RadioGroup userTypeRadioGroup, genderRadioGroup;
     private Button btnsignUp;
-
+    DatabaseManager dbManager = DatabaseManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_sign_up);
-
-        DatabaseManager dbManager = DatabaseManager.getInstance();
-        dbManager.initializeDB();
 
         etfname = findViewById(R.id.signup_firstname);
         etlastname = findViewById(R.id.signup_lastname);
@@ -37,7 +37,7 @@ public class Activity_sign_up extends AppCompatActivity {
         genderRadioGroup = findViewById(R.id.gender_radio_group);
         btnsignUp = findViewById(R.id.signup_button);
 
-        btnsignUp.setOnClickListener(view -> insertUsers());
+        btnsignUp.setOnClickListener(view -> {insertUsers();});
 
         loginredirect = findViewById(R.id.loginredirect);
         loginredirect.setOnClickListener(new View.OnClickListener() {
@@ -61,14 +61,22 @@ public class Activity_sign_up extends AppCompatActivity {
 
         // Get selected user type
         RadioButton userTypeRadioButton = findViewById(userTypeRadioGroup.getCheckedRadioButtonId());
-        String userType = userTypeRadioButton.getText().toString();
-
+//        String userType = userTypeRadioButton.getText().toString();
+        String userType = "Renter";
         // Get selected gender
         RadioButton genderRadioButton = findViewById(genderRadioGroup.getCheckedRadioButtonId());
         String gender = genderRadioButton.getText().toString();
 
-        DatabaseManager dbManager = DatabaseManager.getInstance();
-        dbManager.insertUser(firstName, lastName, gender, email, username, password);
+        boolean user_inserted = dbManager.insertUser(firstName, lastName, gender, email, "address", username, userType, password);
+
+        if (user_inserted){
+            Intent intent1 = new Intent(
+                    Activity_sign_up.this,
+                    MainActivity.class
+            );
+
+            startActivity(intent1);
+        }
     }
 
 }
